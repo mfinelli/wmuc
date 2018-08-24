@@ -4,31 +4,33 @@ import "fmt"
 
 type tokenType int
 
-type token struct {
-	kind  tokenType
-	value string
+type Token struct {
+	Kind  tokenType
+	Value string
 }
 
 const (
 	TOKEN_ERROR tokenType = iota
 	TOKEN_EOF
+
+	TOKEN_VALUE
 )
 
 const EOF rune = 0
 const NEWLINE string = "\n"
 
-func (t token) String() string {
-	switch t.kind {
+func (t Token) String() string {
+	switch t.Kind {
 	case TOKEN_EOF:
 		return "EOF"
 
 	case TOKEN_ERROR:
-		return t.value
+		return t.Value
 	}
 
-	if len(t.value) > 15 {
-		return fmt.Sprintf("%.15q...", t.value)
+	if len(t.Value) > 15 {
+		return fmt.Sprintf("%.15q...", t.Value)
 	}
 
-	return fmt.Sprintf("%q", t.value)
+	return fmt.Sprintf("%q", t.Value)
 }
