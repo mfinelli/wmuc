@@ -5,7 +5,7 @@ import "fmt"
 type TokenType int
 
 type Token struct {
-	Kind  tokenType
+	Kind  TokenType
 	Value string
 }
 
@@ -21,9 +21,9 @@ const (
 )
 
 const EOF rune = 0
-// const NEWLINE string = "\n"
-// const TAB = "\t"
-// const SPACE = " "
+const NEWLINE = rune('\n')
+const TAB = rune('\t')
+const SPACE = rune(' ')
 
 // keywords
 const KEYWORD_REPO = "REPO"

@@ -1,5 +1,8 @@
 package lexer
 
+import "fmt"
+import "unicode/utf8"
+
 import "github.com/mfinelli/wmuc/tokens"
 
 type lexer struct {
@@ -9,37 +12,42 @@ type lexer struct {
 	pos   int
 	width int
 	state stateFunc
-	items chan tokens.Token
+	Items chan tokens.Token
 }
 
 func Lex(name, input string) *lexer {
 	l := &lexer{
 		name:  name,
 		input: input,
-		// state: lexUnkown
-		items: make(chan item, 2),
+		state: lexUnkown,
+		Items: make(chan tokens.Token, 2),
 	}
 
 	return l
 }
 
 func (l *lexer) run() {
-	for state := lexText; state != nil; {
+	for state := lexUnkown; state != nil; {
 		state = state(l)
 	}
 
-	close(l.items)
+	close(l.Items)
 }
 
 func (l *lexer) emit(t tokens.TokenType) {
-	l.items <- tokens.Token{t, l.input[l.start:l.pos]}
+	l.Items <- tokens.Token{t, l.input[l.start:l.pos]}
 	l.start = l.pos
 }
 
-func (l *lexer) nextToken() tokens.Token {
+func (l *lexer) errorf(f string, args ...interface{}) stateFunc {
+	l.Items <- tokens.Token{tokens.TOKEN_ERROR, fmt.Sprintf(f, args...)}
+	return nil
+}
+
+func (l *lexer) NextToken() tokens.Token {
 	for {
 		select {
-		case tok := <-l.items:
+		case tok := <-l.Items:
 			return tok
 		default:
 			l.state = l.state(l)
@@ -50,15 +58,16 @@ func (l *lexer) nextToken() tokens.Token {
 }
 
 // return the next rune in the input
-func (l *lexer) next() (rune int) {
+func (l *lexer) next() rune {
 	if l.pos >= len(l.input) {
 		l.width = 0
 		return tokens.EOF
 	}
 
-	rune, l.width = utf8.DecodeRuneInString(l.input[l.pos:])
+	result, width := utf8.DecodeRuneInString(l.input[l.pos:])
+	l.width = width
 	l.pos += l.width
-	return rune
+	return result
 }
 
 // skips any consumed input
@@ -72,7 +81,7 @@ func (l *lexer) backup() {
 }
 
 // return the next rune without consuming it
-func (l *lexer) peek() int {
+func (l *lexer) peek() rune {
 	rune := l.next()
 	l.backup()
 	return rune

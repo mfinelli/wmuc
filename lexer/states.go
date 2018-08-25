@@ -1,8 +1,9 @@
-package "lexer"
+package lexer
 
 import "strings"
+import "unicode"
 
-import "github.com/mfinelli/tokens"
+import "github.com/mfinelli/wmuc/tokens"
 
 // represent the state as a function that returns the next state
 type stateFunc func(*lexer) stateFunc
@@ -14,17 +15,14 @@ func lexUnkown(l *lexer) stateFunc {
 			return lexRepo
 		}
 
-		// check and ignore whitespace: unicode.IsSpace
-
-		if l.next() == tokens.EOF {
-			break
+		switch r := l.next(); {
+		case unicode.IsSpace(r):
+			l.ignore()
+		case r == tokens.EOF:
+			l.emit(tokens.TOKEN_EOF)
+			return nil
 		}
 	}
-
-	// we've reached the end of input, emit the last item and then EOF
-	// if l.pos > l.start { l.emit(TODO) }
-	l.emit(tokens.TOKEN_EOF)
-	return nil
 }
 
 func lexRepo(l *lexer) stateFunc {
@@ -38,19 +36,21 @@ func lexRepoBeginQuote(l *lexer) stateFunc {
 		if strings.HasPrefix(l.input[l.pos:],
 			tokens.KEYWORD_SINGLE_QUOTE) {
 			l.emit(tokens.TOKEN_SINGLE_QUOTE)
-			return lexRepoValueSingleQuote
+			// return lexRepoValueSingleQuote
+			return lexUnkown
 		}
 
 		if strings.HasPrefix(l.input[l.pos:],
 			tokens.KEYWORD_DOUBLE_QUOTE) {
 			l.emit(tokens.TOKEN_DOUBLE_QUOTE)
-			return lexRepoValueDoubleQuote
+			// return lexRepoValueDoubleQuote
+			return lexUnkown
 		}
 
 		switch r := l.next(); {
 		case r == tokens.EOF:
 			return l.errorf("unexpected end of input")
-		case r == "\t" || r == " " || r == "\n":
+		case r == rune('\t') || r == rune(' ') || r == rune('\n'):
 			l.ignore()
 		}
 	}
