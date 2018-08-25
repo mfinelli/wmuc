@@ -2,7 +2,7 @@ package tokens
 
 import "fmt"
 
-type tokenType int
+type TokenType int
 
 type Token struct {
 	Kind  tokenType
@@ -10,14 +10,25 @@ type Token struct {
 }
 
 const (
-	TOKEN_ERROR tokenType = iota
+	TOKEN_ERROR TokenType = iota
 	TOKEN_EOF
 
+	TOKEN_SINGLE_QUOTE
+	TOKEN_DOUBLE_QUOTE
+
 	TOKEN_VALUE
+	TOKEN_REPO
 )
 
 const EOF rune = 0
-const NEWLINE string = "\n"
+// const NEWLINE string = "\n"
+// const TAB = "\t"
+// const SPACE = " "
+
+// keywords
+const KEYWORD_REPO = "REPO"
+const KEYWORD_SINGLE_QUOTE = "'"
+const KEYWORD_DOUBLE_QUOTE = "\""
 
 func (t Token) String() string {
 	switch t.Kind {
