@@ -22,6 +22,7 @@ func Parse(input string) map[string]Project {
 			currentRepo = Repo{Url: token.Value}
 			currentProject.Repos = append(currentProject.Repos,
 				currentRepo)
+			results[currentProject.Path] = currentProject
 		}
 
 		if token.Kind == tokens.TOKEN_EOF {
