@@ -1,6 +1,7 @@
 package lexer
 
 import "fmt"
+import "strings"
 import "unicode/utf8"
 
 import "github.com/mfinelli/wmuc/tokens"
@@ -36,6 +37,12 @@ func (l *lexer) run() {
 
 func (l *lexer) emit(t tokens.TokenType) {
 	l.Items <- tokens.Token{t, l.input[l.start:l.pos]}
+	l.start = l.pos
+}
+
+func (l *lexer) emitWithEscapes(t tokens.TokenType, escape string) {
+	escaped := strings.Replace(l.input[l.start:l.pos], fmt.Sprintf("\\%s", escape), escape, -1)
+	l.Items <- tokens.Token{t, escaped}
 	l.start = l.pos
 }
 

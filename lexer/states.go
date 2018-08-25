@@ -48,16 +48,16 @@ func lexRepoBeginQuote(l *lexer) stateFunc {
 	for {
 		if strings.HasPrefix(l.input[l.pos:],
 			tokens.KEYWORD_SINGLE_QUOTE) {
+			l.pos += len(tokens.KEYWORD_SINGLE_QUOTE)
 			l.emit(tokens.TOKEN_SINGLE_QUOTE)
-			// return lexRepoValueSingleQuote
-			return lexUnkown
+			return lexRepoValueSingleQuote
 		}
 
 		if strings.HasPrefix(l.input[l.pos:],
 			tokens.KEYWORD_DOUBLE_QUOTE) {
+			l.pos += len(tokens.KEYWORD_DOUBLE_QUOTE)
 			l.emit(tokens.TOKEN_DOUBLE_QUOTE)
-			// return lexRepoValueDoubleQuote
-			return lexUnkown
+			return lexRepoValueDoubleQuote
 		}
 
 		switch r := l.next(); {
@@ -67,4 +67,66 @@ func lexRepoBeginQuote(l *lexer) stateFunc {
 			l.ignore()
 		}
 	}
+}
+
+func lexRepoValueDoubleQuote(l *lexer) stateFunc {
+	skipNext := false
+	for {
+		// skip this character because we detected an escape sequence
+		if skipNext {
+			skipNext = false
+			l.next()
+			continue
+		}
+
+		switch r := l.next(); {
+		case r == tokens.EOF:
+			return l.errorf("unexpected end of input")
+		case r == tokens.NEWLINE:
+			return l.errorf("unexpected newline")
+		case r == tokens.ESCAPE:
+			skipNext = true
+		case r == tokens.DOUBLE_QUOTE:
+			l.backup()
+			l.emitWithEscapes(tokens.TOKEN_REPO_VALUE, "\"")
+			return lexRepoEndDoubleQuote
+		}
+	}
+}
+
+func lexRepoValueSingleQuote(l *lexer) stateFunc {
+	skipNext := false
+	for {
+		// skip this character because we detected an escape sequence
+		if skipNext {
+			skipNext = false
+			l.next()
+			continue
+		}
+
+		switch r := l.next(); {
+		case r == tokens.EOF:
+			return l.errorf("unexpected end of input")
+		case r == tokens.NEWLINE:
+			return l.errorf("unexpected newline")
+		case r == tokens.ESCAPE:
+			skipNext = true
+		case r == tokens.SINGLE_QUOTE:
+			l.backup()
+			l.emitWithEscapes(tokens.TOKEN_REPO_VALUE, "'")
+			return lexRepoEndSingleQuote
+		}
+	}
+}
+
+func lexRepoEndDoubleQuote(l *lexer) stateFunc {
+	l.pos += len(tokens.KEYWORD_DOUBLE_QUOTE)
+	l.emit(tokens.TOKEN_DOUBLE_QUOTE)
+	return lexUnkown
+}
+
+func lexRepoEndSingleQuote(l *lexer) stateFunc {
+	l.pos += len(tokens.KEYWORD_SINGLE_QUOTE)
+	l.emit(tokens.TOKEN_SINGLE_QUOTE)
+	return lexUnkown
 }

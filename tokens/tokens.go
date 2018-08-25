@@ -32,6 +32,9 @@ const NEWLINE = rune('\n')
 const TAB = rune('\t')
 const SPACE = rune(' ')
 const COMMENT = rune('#')
+const ESCAPE = rune('\\')
+const SINGLE_QUOTE = rune('\'')
+const DOUBLE_QUOTE = rune('"')
 
 // keywords
 const KEYWORD_PROJECT = "PROJECT"
