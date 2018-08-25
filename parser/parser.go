@@ -3,16 +3,6 @@ package parser
 import "github.com/mfinelli/wmuc/lexer"
 import "github.com/mfinelli/wmuc/tokens"
 
-type Project struct {
-	Path  string
-	Repos []Repo
-}
-
-type Repo struct {
-	Url    string
-	Branch string
-}
-
 func Parse(input string) map[string]Project {
 	l := lexer.Lex("test", input)
 	results := make(map[string]Project)
