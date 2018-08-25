@@ -16,17 +16,27 @@ const (
 	TOKEN_SINGLE_QUOTE
 	TOKEN_DOUBLE_QUOTE
 
-	TOKEN_VALUE
+	TOKEN_PROJECT
+	TOKEN_PROJECT_VALUE
 	TOKEN_REPO
+	TOKEN_REPO_VALUE
+	TOKEN_BRANCH
+	TOKEN_BRANCH_VALUE
+
+	TOKEN_DO
+	TOKEN_END
 )
 
 const EOF rune = 0
 const NEWLINE = rune('\n')
 const TAB = rune('\t')
 const SPACE = rune(' ')
+const COMMENT = rune('#')
 
 // keywords
+const KEYWORD_PROJECT = "PROJECT"
 const KEYWORD_REPO = "REPO"
+const KEYWORD_BRANCH = "BRANCH"
 const KEYWORD_SINGLE_QUOTE = "'"
 const KEYWORD_DOUBLE_QUOTE = "\""
 

@@ -18,9 +18,22 @@ func lexUnkown(l *lexer) stateFunc {
 		switch r := l.next(); {
 		case unicode.IsSpace(r):
 			l.ignore()
+		case r == tokens.COMMENT:
+			return lexCommentFromUnknown
 		case r == tokens.EOF:
 			l.emit(tokens.TOKEN_EOF)
 			return nil
+		}
+	}
+}
+
+func lexCommentFromUnknown(l *lexer) stateFunc {
+	for {
+		switch r := l.next(); {
+		case r == tokens.NEWLINE:
+			return lexUnkown
+		default:
+			l.ignore()
 		}
 	}
 }

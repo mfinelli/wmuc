@@ -18,8 +18,8 @@ func TestString(t *testing.T) {
 	}{
 		{tokens.Token{tokens.TOKEN_EOF, fmt.Sprintf("%c", eof)}, "EOF"},
 		{tokens.Token{tokens.TOKEN_ERROR, errorText}, errorText},
-		{tokens.Token{tokens.TOKEN_VALUE, shortStr}, shortStrExp},
-		{tokens.Token{tokens.TOKEN_VALUE, longStr}, longStrExp},
+		{tokens.Token{tokens.TOKEN_PROJECT, shortStr}, shortStrExp},
+		{tokens.Token{tokens.TOKEN_REPO_VALUE, longStr}, longStrExp},
 	}
 
 	for _, test := range tests {
