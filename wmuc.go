@@ -10,7 +10,11 @@ func main() {
 	repo 'test two'`
 	results := parser.Parse(input)
 
-	for _, token := range results {
-		fmt.Print(token)
+	for _, project := range results {
+		fmt.Printf("For project: %q\n", project.Path)
+
+		for _, repo := range project.Repos {
+			fmt.Printf("\trepo: %s\n", repo.Url)
+		}
 	}
 }
