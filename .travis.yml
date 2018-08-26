@@ -5,6 +5,9 @@ language: go
 go:
     - '1.10'
 
+install:
+    - go get -v ./...
+
 script:
     - make test && make
 
