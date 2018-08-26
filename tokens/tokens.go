@@ -40,6 +40,8 @@ const DOUBLE_QUOTE = rune('"')
 const KEYWORD_PROJECT = "PROJECT"
 const KEYWORD_REPO = "REPO"
 const KEYWORD_BRANCH = "BRANCH"
+const KEYWORD_DO = "DO"
+const KEYWORD_END = "END"
 const KEYWORD_SINGLE_QUOTE = "'"
 const KEYWORD_DOUBLE_QUOTE = "\""
 
