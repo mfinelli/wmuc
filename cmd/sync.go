@@ -1,18 +1,59 @@
 package cmd
 
+import "errors"
 import "fmt"
+import "io/ioutil"
 import "os"
 import "path"
 import "path/filepath"
 import "strings"
 
+
+import "github.com/spf13/cobra"
 import "gopkg.in/src-d/go-git.v4"
 import "gopkg.in/src-d/go-git.v4/config"
 import "gopkg.in/src-d/go-git.v4/plumbing"
 
 import "github.com/mfinelli/wmuc/parser"
 
-func CloneRepos(results map[string]parser.Project) {
+var syncCmd = &cobra.Command{
+	Use:   "sync",
+	Short: "ensure disk matches chuckfile",
+	Long: `Ensure the repositories and configuration specified in the
+chuckfile match what is on disk.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		input, err := readChuckfile()
+
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		results := parser.Parse(input)
+		fmt.Println(results)
+		cloneRepos(results)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(syncCmd)
+}
+
+func readChuckfile() (string, error) {
+	allowed := []string{"chuckfile", "Chuckfile", "CHUCKFILE"}
+
+	for _, filename := range allowed {
+		bytes, err := ioutil.ReadFile(filename)
+
+		if err == nil {
+			return string(bytes), nil
+		}
+	}
+
+	return "", errors.New("unable to load a chuckfile in this directory")
+}
+
+func cloneRepos(results map[string]parser.Project) {
 	cwd, _ := os.Getwd()
 
 	for _, project := range results {

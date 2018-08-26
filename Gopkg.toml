@@ -1,4 +1,8 @@
 [[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "0.0.3"
+
+[[constraint]]
   name = "gopkg.in/src-d/go-git.v4"
   version = "4.6.0"
 
