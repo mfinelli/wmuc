@@ -1,5 +1,8 @@
 package parser
 
+import "fmt"
+import "os"
+
 import "github.com/mfinelli/wmuc/lexer"
 import "github.com/mfinelli/wmuc/tokens"
 
@@ -12,6 +15,11 @@ func Parse(input string) map[string]Project {
 
 	for {
 		token := l.NextToken()
+
+		if token.Kind == tokens.TOKEN_ERROR {
+			fmt.Println(token.Value)
+			os.Exit(1)
+		}
 
 		if token.Kind == tokens.TOKEN_PROJECT_VALUE {
 			currentProject = findOrCreateProject(token.Value,
