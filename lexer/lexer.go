@@ -34,19 +34,20 @@ func (l *lexer) run() {
 }
 
 func (l *lexer) emit(t tokens.TokenType) {
-	l.Items <- tokens.Token{t, l.input[l.start:l.pos]}
+	l.Items <- tokens.Token{Kind: t, Value: l.input[l.start:l.pos]}
 	l.start = l.pos
 }
 
 func (l *lexer) emitWithEscapes(t tokens.TokenType, escape string) {
 	escaped := strings.Replace(l.input[l.start:l.pos],
 		fmt.Sprintf("\\%s", escape), escape, -1)
-	l.Items <- tokens.Token{t, escaped}
+	l.Items <- tokens.Token{Kind: t, Value: escaped}
 	l.start = l.pos
 }
 
 func (l *lexer) errorf(f string, args ...interface{}) stateFunc {
-	l.Items <- tokens.Token{tokens.TOKEN_ERROR, fmt.Sprintf(f, args...)}
+	l.Items <- tokens.Token{Kind: tokens.TOKEN_ERROR,
+		Value: fmt.Sprintf(f, args...)}
 	return nil
 }
 
@@ -59,8 +60,6 @@ func (l *lexer) NextToken() tokens.Token {
 			l.state = l.state(l)
 		}
 	}
-
-	panic("nextToken reached an invalid state")
 }
 
 // return the next rune in the input

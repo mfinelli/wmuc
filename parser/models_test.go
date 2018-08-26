@@ -9,10 +9,10 @@ func TestProjectString(t *testing.T) {
 		exp string
 	}{
 		{parser.Project{Path: ""}, "\"\": []"},
-		{parser.Project{"", []parser.Repo{
+		{parser.Project{Path: "", Repos: []parser.Repo{
 			{Url: "test1"}, {Url: "test2"},
 		}}, "\"\": [test1, test2]"},
-		{parser.Project{"test", []parser.Repo{
+		{parser.Project{Path: "test", Repos: []parser.Repo{
 			{Url: "test3", Branch: "dev"}, {Url: "test4"},
 		}}, "\"test\": [test3(dev), test4]"},
 	}
@@ -32,7 +32,8 @@ func TestRepoString(t *testing.T) {
 	}{
 		{parser.Repo{Url: "https://github.com/mfinelli/wmuc.git"},
 			"https://github.com/mfinelli/wmuc.git"},
-		{parser.Repo{"https://github.com/mfinelli/wmuc.git", "master"},
+		{parser.Repo{Url: "https://github.com/mfinelli/wmuc.git",
+			Branch: "master"},
 			"https://github.com/mfinelli/wmuc.git(master)"},
 	}
 
