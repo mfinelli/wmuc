@@ -5,7 +5,7 @@ all: wmuc
 fmt:
 	find . -name 'vendor*' -prune -o -name '*.go' -exec go fmt {} \;
 
-test: fmt
+test: fmt vendor
 	go test ./...
 
 wmuc: $(SOURCES) vendor
