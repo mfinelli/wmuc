@@ -18,7 +18,7 @@ type lexer struct {
 func Lex(input string) *lexer {
 	l := &lexer{
 		input: input,
-		state: lexUnkown,
+		state: lexGeneric,
 		Items: make(chan tokens.Token, 2),
 	}
 
@@ -26,7 +26,7 @@ func Lex(input string) *lexer {
 }
 
 func (l *lexer) run() {
-	for state := lexUnkown; state != nil; {
+	for state := lexGeneric; state != nil; {
 		state = state(l)
 	}
 

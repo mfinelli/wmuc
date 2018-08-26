@@ -30,6 +30,7 @@ func Parse(input string) map[string]Project {
 		}
 	}
 
+	close(l.Items)
 	return results
 }
 
