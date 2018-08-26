@@ -1,17 +1,17 @@
-SOURCES = $(wildcard **/*.go)
+SOURCES = $(wildcard **/*.go | grep -v ^vendor)
 
 all: wmuc
 
-fetch:
-	go get -v ./...
-
 fmt:
-	find . -name '*.go' -exec go fmt {} \;
+	find . -name 'vendor*' -prune -o -name '*.go' -exec go fmt {} \;
 
 test: fmt
 	go test ./...
 
-wmuc: $(SOURCES)
+wmuc: $(SOURCES) vendor
 	go build wmuc.go
 
-.PHONY: fetch fmt test
+vendor: Gopkg.toml Gopkg.lock
+	dep ensure
+
+.PHONY: all fmt test

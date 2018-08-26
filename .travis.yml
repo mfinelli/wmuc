@@ -6,7 +6,8 @@ go:
     - '1.10'
 
 install:
-    - go get -v ./...
+    # this is bad but it's ci so i don't really care
+    - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 script:
     - make test && make
