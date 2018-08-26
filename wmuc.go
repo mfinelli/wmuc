@@ -5,6 +5,7 @@ import "fmt"
 import "io/ioutil"
 import "os"
 
+import "github.com/mfinelli/wmuc/cmd"
 import "github.com/mfinelli/wmuc/parser"
 
 func main() {
@@ -16,14 +17,7 @@ func main() {
 	}
 
 	results := parser.Parse(input)
-
-	for _, project := range results {
-		fmt.Printf("For project: %q\n", project.Path)
-
-		for _, repo := range project.Repos {
-			fmt.Printf("\trepo: %s\n", repo.Url)
-		}
-	}
+	cmd.CloneRepos(results)
 }
 
 func readChuckfile() (string, error) {
