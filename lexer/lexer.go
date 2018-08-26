@@ -7,7 +7,6 @@ import "unicode/utf8"
 import "github.com/mfinelli/wmuc/tokens"
 
 type lexer struct {
-	name  string
 	input string
 	start int
 	pos   int
@@ -16,9 +15,8 @@ type lexer struct {
 	Items chan tokens.Token
 }
 
-func Lex(name, input string) *lexer {
+func Lex(input string) *lexer {
 	l := &lexer{
-		name:  name,
 		input: input,
 		state: lexUnkown,
 		Items: make(chan tokens.Token, 2),

@@ -4,7 +4,7 @@ import "github.com/mfinelli/wmuc/lexer"
 import "github.com/mfinelli/wmuc/tokens"
 
 func Parse(input string) map[string]Project {
-	l := lexer.Lex("test", input)
+	l := lexer.Lex(input)
 	results := make(map[string]Project)
 
 	currentProject := findOrCreateProject("", results)
