@@ -4,6 +4,8 @@ import "fmt"
 import "strings"
 import "unicode/utf8"
 
+import "github.com/spf13/viper"
+
 import "github.com/mfinelli/wmuc/tokens"
 
 type lexer struct {
@@ -34,6 +36,10 @@ func (l *lexer) run() {
 }
 
 func (l *lexer) emit(t tokens.TokenType) {
+	if viper.GetBool("debug") {
+		fmt.Printf("emitted %q\n", l.input[l.start:l.pos])
+	}
+
 	l.Items <- tokens.Token{Kind: t, Value: l.input[l.start:l.pos]}
 	l.start = l.pos
 }
@@ -41,6 +47,11 @@ func (l *lexer) emit(t tokens.TokenType) {
 func (l *lexer) emitWithEscapes(t tokens.TokenType, escape string) {
 	escaped := strings.Replace(l.input[l.start:l.pos],
 		fmt.Sprintf("\\%s", escape), escape, -1)
+
+	if viper.GetBool("debug") {
+		fmt.Printf("emitted %q\n", escaped)
+	}
+
 	l.Items <- tokens.Token{Kind: t, Value: escaped}
 	l.start = l.pos
 }

@@ -9,6 +9,7 @@ import "path/filepath"
 import "strings"
 
 import "github.com/spf13/cobra"
+import "github.com/spf13/viper"
 import "gopkg.in/src-d/go-git.v4"
 import "gopkg.in/src-d/go-git.v4/config"
 import "gopkg.in/src-d/go-git.v4/plumbing"
@@ -29,13 +30,16 @@ chuckfile match what is on disk.`,
 		}
 
 		results := parser.Parse(input)
-		fmt.Println(results)
 		cloneRepos(results)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(syncCmd)
+	syncCmd.Flags().BoolP("debug", "d", false, "enable lexer/parser debug")
+	syncCmd.Flags().BoolP("verbose", "v", false, "enable verbose mode")
+	viper.BindPFlag("debug", syncCmd.Flags().Lookup("debug"))
+	viper.BindPFlag("verbose", syncCmd.Flags().Lookup("verbose"))
 }
 
 func readChuckfile() (string, error) {

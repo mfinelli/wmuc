@@ -10,8 +10,8 @@ var rootCmd = &cobra.Command{
 	Short: "A git repository manager.",
 	Long: `Wind Me Up, Chuck
 
-wmuc is a way to manage multiple git repositories in a specific directory
-structure.`,
+wmuc is a way to manage multiple git repositories in a
+specific directory structure.`,
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
