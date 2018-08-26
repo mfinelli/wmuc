@@ -2,6 +2,9 @@ SOURCES = $(wildcard **/*.go | grep -v ^vendor)
 
 all: wmuc
 
+clean:
+	rm -rf vendor wmuc
+
 fmt:
 	find . -name 'vendor*' -prune -o -name '*.go' -exec go fmt {} \;
 
@@ -14,4 +17,4 @@ wmuc: $(SOURCES) vendor
 vendor: Gopkg.toml Gopkg.lock
 	dep ensure
 
-.PHONY: all fmt test
+.PHONY: all clean fmt test
