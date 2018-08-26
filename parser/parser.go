@@ -13,6 +13,10 @@ func Parse(input string) map[string]Project {
 	currentProject := findOrCreateProject("", results)
 	var currentRepo Repo
 
+	inProject := false
+	allowedTokens := []tokens.TokenType{tokens.TOKEN_PROJECT,
+		tokens.TOKEN_REPO, tokens.TOKEN_EOF}
+
 	for {
 		token := l.NextToken()
 
@@ -21,9 +25,41 @@ func Parse(input string) map[string]Project {
 			os.Exit(1)
 		}
 
+		if !allowedToken(token.Kind, allowedTokens) {
+			fmt.Printf("unexpected %q\n", token.Value)
+			os.Exit(1)
+		}
+
+		if token.Kind == tokens.TOKEN_PROJECT {
+			inProject = true
+			consumeQuote(l.NextToken())
+			allowedTokens = []tokens.TokenType{
+				tokens.TOKEN_PROJECT_VALUE}
+		}
+
 		if token.Kind == tokens.TOKEN_PROJECT_VALUE {
 			currentProject = findOrCreateProject(token.Value,
 				results)
+			consumeQuote(l.NextToken())
+			allowedTokens = []tokens.TokenType{tokens.TOKEN_DO}
+		}
+
+		if token.Kind == tokens.TOKEN_DO {
+			allowedTokens = []tokens.TokenType{tokens.TOKEN_REPO,
+				tokens.TOKEN_END}
+		}
+
+		if token.Kind == tokens.TOKEN_END {
+			currentProject = findOrCreateProject("", results)
+			inProject = false
+			allowedTokens = []tokens.TokenType{tokens.TOKEN_PROJECT,
+				tokens.TOKEN_REPO, tokens.TOKEN_EOF}
+		}
+
+		if token.Kind == tokens.TOKEN_REPO {
+			consumeQuote(l.NextToken())
+			allowedTokens = []tokens.TokenType{
+				tokens.TOKEN_REPO_VALUE}
 		}
 
 		if token.Kind == tokens.TOKEN_REPO_VALUE {
@@ -31,6 +67,16 @@ func Parse(input string) map[string]Project {
 			currentProject.Repos = append(currentProject.Repos,
 				currentRepo)
 			results[currentProject.Path] = currentProject
+			consumeQuote(l.NextToken())
+
+			if inProject == true {
+				allowedTokens = []tokens.TokenType{
+					tokens.TOKEN_REPO, tokens.TOKEN_END}
+			} else {
+				allowedTokens = []tokens.TokenType{
+					tokens.TOKEN_REPO, tokens.TOKEN_PROJECT,
+					tokens.TOKEN_EOF}
+			}
 		}
 
 		if token.Kind == tokens.TOKEN_EOF {
@@ -50,4 +96,21 @@ func findOrCreateProject(search string, m map[string]Project) Project {
 	// not found, so initialize a new project and add it to the map
 	m[search] = Project{Path: search}
 	return m[search]
+}
+
+func allowedToken(token tokens.TokenType, allowed []tokens.TokenType) bool {
+	for _, a := range allowed {
+		if token == a {
+			return true
+		}
+	}
+	return false
+}
+
+func consumeQuote(nextToken tokens.Token) {
+	if nextToken.Kind != tokens.TOKEN_SINGLE_QUOTE &&
+		nextToken.Kind != tokens.TOKEN_DOUBLE_QUOTE {
+		fmt.Println("expecting quote")
+		os.Exit(1)
+	}
 }
