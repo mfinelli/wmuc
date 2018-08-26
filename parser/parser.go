@@ -14,6 +14,7 @@ func Parse(input string) map[string]Project {
 	var currentRepo Repo
 
 	inProject := false
+	optionsAllowed := false
 	allowedTokens := []tokens.TokenType{tokens.TOKEN_PROJECT,
 		tokens.TOKEN_REPO, tokens.TOKEN_EOF}
 
@@ -27,6 +28,17 @@ func Parse(input string) map[string]Project {
 
 		if !allowedToken(token.Kind, allowedTokens) {
 			fmt.Printf("unexpected %q\n", token.Value)
+			os.Exit(1)
+		}
+
+		if optionsAllowed && token.Kind == tokens.TOKEN_COMMA {
+			optionsAllowed = false
+			allowedTokens = []tokens.TokenType{tokens.TOKEN_BRANCH}
+			continue
+		}
+
+		if !optionsAllowed && token.Kind == tokens.TOKEN_COMMA {
+			fmt.Println("unexpected comma")
 			os.Exit(1)
 		}
 
@@ -69,13 +81,55 @@ func Parse(input string) map[string]Project {
 			results[currentProject.Path] = currentProject
 			consumeQuote(l.NextToken())
 
+			optionsAllowed = true
+
 			if inProject == true {
 				allowedTokens = []tokens.TokenType{
-					tokens.TOKEN_REPO, tokens.TOKEN_END}
+					tokens.TOKEN_REPO, tokens.TOKEN_END,
+					tokens.TOKEN_COMMA}
 			} else {
 				allowedTokens = []tokens.TokenType{
 					tokens.TOKEN_REPO, tokens.TOKEN_PROJECT,
-					tokens.TOKEN_EOF}
+					tokens.TOKEN_COMMA, tokens.TOKEN_EOF}
+			}
+		}
+
+		if token.Kind == tokens.TOKEN_BRANCH {
+			consumeQuote(l.NextToken())
+			allowedTokens = []tokens.TokenType{
+				tokens.TOKEN_BRANCH_VALUE}
+		}
+
+		if token.Kind == tokens.TOKEN_BRANCH_VALUE {
+			// remove the current repo, modify the branch and then
+			// add it back... there's almost certainly a better way
+			for i, r := range currentProject.Repos {
+				if r.Url == currentRepo.Url {
+					currentProject.Repos = append(
+						currentProject.Repos[:i],
+						currentProject.Repos[i+1:]...)
+					break
+				}
+			}
+
+			currentRepo.Branch = token.Value
+			currentProject.Repos = append(currentProject.Repos,
+				currentRepo)
+			results[currentProject.Path] = currentProject
+			consumeQuote(l.NextToken())
+
+			fmt.Println(currentRepo)
+
+			optionsAllowed = true
+
+			if inProject == true {
+				allowedTokens = []tokens.TokenType{
+					tokens.TOKEN_REPO, tokens.TOKEN_END,
+					tokens.TOKEN_COMMA}
+			} else {
+				allowedTokens = []tokens.TokenType{
+					tokens.TOKEN_REPO, tokens.TOKEN_PROJECT,
+					tokens.TOKEN_COMMA, tokens.TOKEN_EOF}
 			}
 		}
 

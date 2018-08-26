@@ -15,6 +15,7 @@ const (
 
 	TOKEN_SINGLE_QUOTE
 	TOKEN_DOUBLE_QUOTE
+	TOKEN_COMMA
 
 	TOKEN_PROJECT
 	TOKEN_PROJECT_VALUE
@@ -35,15 +36,17 @@ const COMMENT = rune('#')
 const ESCAPE = rune('\\')
 const SINGLE_QUOTE = rune('\'')
 const DOUBLE_QUOTE = rune('"')
+const COMMA = rune(',')
 
 // keywords
 const KEYWORD_PROJECT = "PROJECT"
 const KEYWORD_REPO = "REPO"
-const KEYWORD_BRANCH = "BRANCH"
+const KEYWORD_BRANCH = "BRANCH:"
 const KEYWORD_DO = "DO"
 const KEYWORD_END = "END"
 const KEYWORD_SINGLE_QUOTE = "'"
 const KEYWORD_DOUBLE_QUOTE = "\""
+const KEYWORD_COMMA = ","
 
 func (t Token) String() string {
 	switch t.Kind {

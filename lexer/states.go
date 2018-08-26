@@ -20,6 +20,13 @@ func lexGeneric(l *lexer) stateFunc {
 			return lexRepo
 		}
 
+		if strings.HasPrefix(strings.ToUpper(l.input[l.pos:]),
+			tokens.KEYWORD_COMMA) {
+			l.pos += len(tokens.KEYWORD_COMMA)
+			l.emit(tokens.TOKEN_COMMA)
+			return lexRepoOptions
+		}
+
 		switch r := l.next(); {
 		case unicode.IsSpace(r):
 			l.ignore()
@@ -57,6 +64,52 @@ func lexRepoEndDoubleQuote(l *lexer) stateFunc {
 }
 
 func lexRepoEndSingleQuote(l *lexer) stateFunc {
+	return lexEndSingleQuote(l, lexGeneric)
+}
+
+func lexRepoOptions(l *lexer) stateFunc {
+	for {
+		if strings.HasPrefix(strings.ToUpper(l.input[l.pos:]),
+			tokens.KEYWORD_BRANCH) {
+			return lexRepoBranch
+		}
+
+		switch r := l.next(); {
+		case unicode.IsSpace(r):
+			l.ignore()
+		case r == tokens.COMMENT:
+			return lexComment(l, lexGeneric)
+		case r == tokens.EOF:
+			return l.errorf("unexpected end of input")
+		}
+	}
+}
+
+func lexRepoBranch(l *lexer) stateFunc {
+	l.pos += len(tokens.KEYWORD_BRANCH)
+	l.emit(tokens.TOKEN_BRANCH)
+	return lexRepoBranchBeginQuote
+}
+
+func lexRepoBranchBeginQuote(l *lexer) stateFunc {
+	return lexQuote(l, lexRepoBranchValueSingleQuote, lexRepoBranchValueDoubleQuote)
+}
+
+func lexRepoBranchValueDoubleQuote(l *lexer) stateFunc {
+	return lexStr(l, tokens.DOUBLE_QUOTE, tokens.TOKEN_BRANCH_VALUE,
+		lexRepoBranchEndDoubleQuote)
+}
+
+func lexRepoBranchValueSingleQuote(l *lexer) stateFunc {
+	return lexStr(l, tokens.DOUBLE_QUOTE, tokens.TOKEN_BRANCH_VALUE,
+		lexRepoBranchEndSingleQuote)
+}
+
+func lexRepoBranchEndDoubleQuote(l *lexer) stateFunc {
+	return lexEndDoubleQuote(l, lexGeneric)
+}
+
+func lexRepoBranchEndSingleQuote(l *lexer) stateFunc {
 	return lexEndSingleQuote(l, lexGeneric)
 }
 
@@ -119,6 +172,13 @@ func lexProjectContext(l *lexer) stateFunc {
 			return lexProjectEnd
 		}
 
+		if strings.HasPrefix(strings.ToUpper(l.input[l.pos:]),
+			tokens.KEYWORD_COMMA) {
+			l.pos += len(tokens.KEYWORD_COMMA)
+			l.emit(tokens.TOKEN_COMMA)
+			return lexProjectRepoOptions
+		}
+
 		switch r := l.next(); {
 		case unicode.IsSpace(r):
 			l.ignore()
@@ -162,5 +222,52 @@ func lexProjectRepoEndDoubleQuote(l *lexer) stateFunc {
 }
 
 func lexProjectRepoEndSingleQuote(l *lexer) stateFunc {
+	return lexEndSingleQuote(l, lexProjectContext)
+}
+
+func lexProjectRepoOptions(l *lexer) stateFunc {
+	for {
+		if strings.HasPrefix(strings.ToUpper(l.input[l.pos:]),
+			tokens.KEYWORD_BRANCH) {
+			return lexProjectRepoBranch
+		}
+
+		switch r := l.next(); {
+		case unicode.IsSpace(r):
+			l.ignore()
+		case r == tokens.COMMENT:
+			return lexComment(l, lexProjectContext)
+		case r == tokens.EOF:
+			return l.errorf("unexpected end of input")
+		}
+	}
+}
+
+func lexProjectRepoBranch(l *lexer) stateFunc {
+	l.pos += len(tokens.KEYWORD_BRANCH)
+	l.emit(tokens.TOKEN_BRANCH)
+	return lexProjectRepoBranchBeginQuote
+}
+
+func lexProjectRepoBranchBeginQuote(l *lexer) stateFunc {
+	return lexQuote(l, lexProjectRepoBranchValueSingleQuote,
+		lexProjectRepoBranchValueDoubleQuote)
+}
+
+func lexProjectRepoBranchValueDoubleQuote(l *lexer) stateFunc {
+	return lexStr(l, tokens.DOUBLE_QUOTE, tokens.TOKEN_BRANCH_VALUE,
+		lexProjectRepoBranchEndDoubleQuote)
+}
+
+func lexProjectRepoBranchValueSingleQuote(l *lexer) stateFunc {
+	return lexStr(l, tokens.DOUBLE_QUOTE, tokens.TOKEN_BRANCH_VALUE,
+		lexProjectRepoBranchEndSingleQuote)
+}
+
+func lexProjectRepoBranchEndDoubleQuote(l *lexer) stateFunc {
+	return lexEndDoubleQuote(l, lexProjectContext)
+}
+
+func lexProjectRepoBranchEndSingleQuote(l *lexer) stateFunc {
 	return lexEndSingleQuote(l, lexProjectContext)
 }
