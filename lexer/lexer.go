@@ -39,7 +39,8 @@ func (l *lexer) emit(t tokens.TokenType) {
 }
 
 func (l *lexer) emitWithEscapes(t tokens.TokenType, escape string) {
-	escaped := strings.Replace(l.input[l.start:l.pos], fmt.Sprintf("\\%s", escape), escape, -1)
+	escaped := strings.Replace(l.input[l.start:l.pos],
+		fmt.Sprintf("\\%s", escape), escape, -1)
 	l.Items <- tokens.Token{t, escaped}
 	l.start = l.pos
 }
