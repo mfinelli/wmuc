@@ -8,7 +8,6 @@ import "path"
 import "path/filepath"
 import "strings"
 
-
 import "github.com/spf13/cobra"
 import "gopkg.in/src-d/go-git.v4"
 import "gopkg.in/src-d/go-git.v4/config"
