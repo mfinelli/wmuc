@@ -2,6 +2,9 @@ SOURCES = $(wildcard **/*.go)
 
 all: wmuc
 
+fetch:
+	go get -v ./...
+
 fmt:
 	find . -name '*.go' -exec go fmt {} \;
 
@@ -11,4 +14,4 @@ test: fmt
 wmuc: $(SOURCES)
 	go build wmuc.go
 
-.PHONY: fmt test
+.PHONY: fetch fmt test
