@@ -1,4 +1,8 @@
-SOURCES = $(wildcard **/*.go | grep -v ^vendor)
+SOURCES = $(wildcard *.go)
+SOURCES += $(wildcard cmd/*.go)
+SOURCES += $(wildcard lexer/*.go)
+SOURCES += $(wildcard parser/*.go)
+SOURCES += $(wildcard tokens/*.go)
 
 all: wmuc
 
