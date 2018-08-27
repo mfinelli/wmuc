@@ -1,4 +1,4 @@
-SOURCES = $(wildcard *.go)
+SOURCES := $(wildcard *.go)
 SOURCES += $(wildcard cmd/*.go)
 SOURCES += $(wildcard lexer/*.go)
 SOURCES += $(wildcard parser/*.go)
