@@ -2,6 +2,7 @@
 
 # start fresh
 make clean
+git stash --all
 
 # tests pass?
 make test
@@ -33,5 +34,7 @@ done
 # capture the sources we used
 make third-party.tar.gz
 gpg -ba third-party.tar.gz
+
+git stash pop
 
 exit 0
