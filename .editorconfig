@@ -12,6 +12,6 @@ trim_trailing_whitespace = true
 indent_style = spaces
 indent_size = 4
 
-[Gopkg.toml]
+[{*.bash,Gopkg.toml}]
 indent_style = spaces
 indent_size = 2

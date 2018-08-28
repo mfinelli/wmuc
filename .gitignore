@@ -1,5 +1,7 @@
 /chuckfile
 /legal/third_party.go
-/third-party.tar.gz
+/third-party.tar.gz*
 /vendor
 /wmuc
+/wmuc-*
+/wmuc.exe*
