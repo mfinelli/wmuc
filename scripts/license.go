@@ -10,7 +10,7 @@ import "sort"
 import "strings"
 
 type licenseText struct {
-	text string
+	text     string
 	projects []string
 }
 
@@ -25,23 +25,23 @@ func main() {
 
 	err := filepath.Walk("vendor",
 		func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		for _, exclude := range exclusions {
-			if path == filepath.Join("vendor", exclude) {
-				return nil
+			if err != nil {
+				return err
 			}
-		}
 
-		if strings.HasPrefix(strings.ToUpper(info.Name()), "LICENSE") {
-			proj := filepath.Dir(path)[7:]
-			lfiles[proj] = append(lfiles[proj], path)
-		}
+			for _, exclude := range exclusions {
+				if path == filepath.Join("vendor", exclude) {
+					return nil
+				}
+			}
 
-		return nil
-	})
+			if strings.HasPrefix(strings.ToUpper(info.Name()), "LICENSE") {
+				proj := filepath.Dir(path)[7:]
+				lfiles[proj] = append(lfiles[proj], path)
+			}
+
+			return nil
+		})
 
 	if err != nil {
 		log.Fatal(err)
