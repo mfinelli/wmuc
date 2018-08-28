@@ -29,4 +29,7 @@ legal/third_party.go: scripts/license.go vendor
 third-party.tar.gz: vendor
 	tar zcvf third-party.tar.gz vendor
 
-.PHONY: all clean fmt test
+release:
+	./scripts/release.bash
+
+.PHONY: all clean fmt release test
