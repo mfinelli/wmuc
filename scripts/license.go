@@ -51,7 +51,8 @@ func main() {
 				}
 			}
 
-			if strings.HasPrefix(strings.ToUpper(info.Name()), "LICENSE") {
+			if strings.HasPrefix(strings.ToUpper(info.Name()),
+				"LICENSE") {
 				proj := filepath.Dir(path)[7:]
 				lfiles[proj] = append(lfiles[proj], path)
 			}
