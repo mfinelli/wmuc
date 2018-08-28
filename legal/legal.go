@@ -1,0 +1,3 @@
+package legal
+
+func PrintLegalInfo() {}
