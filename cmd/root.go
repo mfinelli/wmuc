@@ -11,7 +11,12 @@ var rootCmd = &cobra.Command{
 	Long: `Wind Me Up, Chuck
 
 wmuc is a way to manage multiple git repositories in a
-specific directory structure.`,
+specific directory structure.
+
+wmuc  Copyright (C) 2018  Mario Finelli
+This program comes with ABSOLUTELY NO WARRANTY; for details run
+"wmuc about warranty". This is free software, and you are welcome to
+redistribute it under certain conditions; run "wmuc about" for details.`,
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
 

@@ -1,5 +1,6 @@
 SOURCES := $(wildcard *.go)
 SOURCES += $(wildcard cmd/*.go)
+SOURCES += $(wildcard legal/*.go)
 SOURCES += $(wildcard lexer/*.go)
 SOURCES += $(wildcard parser/*.go)
 SOURCES += $(wildcard tokens/*.go)
@@ -12,7 +13,7 @@ clean:
 fmt:
 	find . -name 'vendor*' -prune -o -name '*.go' -exec go fmt {} \;
 
-test: fmt vendor
+test: fmt vendor legal/third_party.go
 	go test ./...
 
 wmuc: $(SOURCES) vendor legal/third_party.go
@@ -23,5 +24,8 @@ vendor: Gopkg.toml Gopkg.lock
 
 legal/third_party.go: scripts/license.go vendor
 	go run scripts/license.go
+
+third-party.tar.gz: vendor
+	tar zcvf third-party.tar.gz vendor
 
 .PHONY: all clean fmt test

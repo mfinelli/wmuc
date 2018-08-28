@@ -12,6 +12,15 @@ var aboutCmd = &cobra.Command{
 	},
 }
 
+var warrantyCmd = &cobra.Command{
+	Use:   "warranty",
+	Short: "show warranty information",
+	Run: func(cmd *cobra.Command, args []string) {
+		legal.PrintWarranty()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(aboutCmd)
+	aboutCmd.AddCommand(warrantyCmd)
 }
