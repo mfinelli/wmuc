@@ -8,7 +8,8 @@ SOURCES += $(wildcard tokens/*.go)
 all: wmuc
 
 clean:
-	rm -rf vendor wmuc legal/third_party.go
+	rm -rf vendor wmuc legal/third_party.go third-party.tar.gz* \
+		wmuc-* wmuc.exe-*
 
 fmt:
 	find . -name 'vendor*' -prune -o -name '*.go' -exec go fmt {} \;
