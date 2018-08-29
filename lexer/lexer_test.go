@@ -49,6 +49,26 @@ func TestLex(t *testing.T) {
 			tokens.Token{tokens.TOKEN_DOUBLE_QUOTE, "\""},
 			tokens.Token{tokens.TOKEN_END, "end"},
 			tokens.Token{tokens.TOKEN_EOF, ""}}},
+		{`project "wmuc" do
+			repo "https://github.com/mfinelli/wmuc.git",
+				branch: "dev"
+		end`, []tokens.Token{
+			tokens.Token{tokens.TOKEN_PROJECT, "project"},
+			tokens.Token{tokens.TOKEN_DOUBLE_QUOTE, "\""},
+			tokens.Token{tokens.TOKEN_PROJECT_VALUE, "wmuc"},
+			tokens.Token{tokens.TOKEN_DOUBLE_QUOTE, "\""},
+			tokens.Token{tokens.TOKEN_DO, "do"},
+			tokens.Token{tokens.TOKEN_REPO, "repo"},
+			tokens.Token{tokens.TOKEN_DOUBLE_QUOTE, "\""},
+			tokens.Token{tokens.TOKEN_REPO_VALUE, wmuc_repo},
+			tokens.Token{tokens.TOKEN_DOUBLE_QUOTE, "\""},
+			tokens.Token{tokens.TOKEN_COMMA, ","},
+			tokens.Token{tokens.TOKEN_BRANCH, "branch:"},
+			tokens.Token{tokens.TOKEN_DOUBLE_QUOTE, "\""},
+			tokens.Token{tokens.TOKEN_BRANCH_VALUE, "dev"},
+			tokens.Token{tokens.TOKEN_DOUBLE_QUOTE, "\""},
+			tokens.Token{tokens.TOKEN_END, "end"},
+			tokens.Token{tokens.TOKEN_EOF, ""}}},
 	}
 
 	for _, test := range tests {
