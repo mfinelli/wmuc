@@ -7,7 +7,12 @@ git stash --all
 # tests pass?
 make test
 
-# build it once
+# build it once: make sure any `go run`
+# that we issue runs with the current OS
+# (go run with GOOS or GOARCH will try
+# and use those settings which might not
+# work depending on the order below and
+# our actual system)
 make
 
 # remove the artifact
