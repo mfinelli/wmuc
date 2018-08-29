@@ -39,6 +39,11 @@ func main() {
 	licenses := make(map[string]string)
 	final := make(map[string]licenseText)
 
+	// find all the files that begin with LICENSE in the vendor directory
+	// and associate the path/to/the/license with the project it belongs
+	// to.
+	// go makes this easy since we can get a url to the project from the
+	// package name
 	err := filepath.Walk("vendor",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -53,6 +58,9 @@ func main() {
 
 			if strings.HasPrefix(strings.ToUpper(info.Name()),
 				"LICENSE") {
+				// strip the vendor/ prefix for the project
+				// url and then add the license file to the
+				// list for that project
 				proj := filepath.Dir(path)[7:]
 				lfiles[proj] = append(lfiles[proj], path)
 			}
@@ -65,6 +73,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// concatenate all the licenses for each individual project
 	for project := range lfiles {
 		str := ""
 
@@ -106,6 +115,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 `
 
+	// calculate a checksum of the license text so we can group projects
+	// that have the same license together
 	for project := range licenses {
 		sum := fmt.Sprintf("%x", md5.Sum([]byte(licenses[project])))
 
@@ -114,21 +125,23 @@ SOFTWARE.
 		final[sum] = lt
 	}
 
+	// sort the sums so that we get the same output every time we run it
 	sums := []string{}
-
 	for sum := range final {
 		sums = append(sums, sum)
 	}
-
 	sort.Strings(sums)
-	output := "package legal\n\nvar thirdparty = `"
 
+	// build up our desired go-file:
+	// package legal
+	// var thirdparty = `ALL THE LICENSES`
+	output := "package legal\n\nvar thirdparty = `"
 	for _, sum := range sums {
 		output += fmt.Sprintf("%s\n", final[sum])
 	}
-
 	output += "`\n"
 
+	// write the file...
 	outputPath := filepath.Join(".", "legal", "third_party.go")
 	err = ioutil.WriteFile(outputPath, []byte(output), 0644)
 	if err != nil {
