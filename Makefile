@@ -4,6 +4,7 @@ SOURCES += $(wildcard legal/*.go)
 SOURCES += $(wildcard lexer/*.go)
 SOURCES += $(wildcard parser/*.go)
 SOURCES += $(wildcard tokens/*.go)
+SOURCES += $(wildcard util/*.go)
 
 all: wmuc
 
