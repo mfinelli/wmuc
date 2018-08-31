@@ -134,8 +134,6 @@ func Parse(input string) map[string]Project {
 			results[currentProject.Path] = currentProject
 			consumeQuote(l.NextToken())
 
-			fmt.Println(currentRepo)
-
 			optionsAllowed = true
 
 			if inProject == true {
