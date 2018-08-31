@@ -20,9 +20,7 @@ import "errors"
 import "fmt"
 import "io/ioutil"
 import "os"
-import "path"
 import "path/filepath"
-import "strings"
 
 import "github.com/spf13/cobra"
 import "github.com/spf13/viper"
@@ -80,9 +78,7 @@ func cloneRepos(results map[string]parser.Project) {
 		os.Chdir(filepath.Join(cwd, project.Path))
 
 		for _, repo := range project.Repos {
-			repopath := path.Base(repo.Url)
-			repodir := strings.TrimSuffix(repopath,
-				filepath.Ext(repopath))
+			repodir := repo.DirFromPath()
 
 			if _, err := os.Stat(repodir); os.IsNotExist(err) {
 				r, err := git.PlainClone(repodir, false,

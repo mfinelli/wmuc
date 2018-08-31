@@ -17,6 +17,8 @@
 package parser
 
 import "fmt"
+import "path"
+import "path/filepath"
 import "strings"
 
 type Project struct {
@@ -44,4 +46,9 @@ func (r Repo) String() string {
 	}
 
 	return fmt.Sprintf("%s(%s)", r.Url, r.Branch)
+}
+
+func (r Repo) DirFromPath() string {
+	rp := path.Base(r.Url)
+	return strings.TrimSuffix(rp, filepath.Ext(rp))
 }

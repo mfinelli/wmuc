@@ -60,3 +60,20 @@ func TestRepoString(t *testing.T) {
 		}
 	}
 }
+
+func TestRepoDirFromPath(t *testing.T) {
+	tests := []struct {
+		r   parser.Repo
+		exp string
+	}{
+		{parser.Repo{Url: "https://github.com/mfinelli/wmuc.git"},
+			"wmuc"},
+	}
+
+	for _, test := range tests {
+		if test.r.DirFromPath() != test.exp {
+			t.Errorf("DirFromPath didn't match %s (got: %s)",
+				test.exp, test.r.DirFromPath())
+		}
+	}
+}
