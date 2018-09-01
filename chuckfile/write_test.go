@@ -24,20 +24,27 @@ import "github.com/mfinelli/wmuc/parser"
 func TestProjectArrayToChuckfile(t *testing.T) {
 	now := time.Date(2018, time.September, 1, 10, 30, 0, 0, time.UTC)
 	version := "0.1.0"
+	head := "# wmuc v0.1.0 generated on: Sat, 01 Sep 2018 10:30:00 UTC\n\n"
 
 	tests := []struct {
 		projects []parser.Project
 		exp      string
 	}{
-		{make([]parser.Project, 0), "# wmuc v0.1.0 generated on: " +
-			"Sat, 01 Sep 2018 10:30:00 UTC\n\n"},
+		{make([]parser.Project, 0), head},
+		{[]parser.Project{
+			parser.Project{"", []parser.Repo{
+				parser.Repo{Url: "repo1"},
+				parser.Repo{Url: "repo2"},
+			}},
+		}, head + "repo \"repo1\"\nrepo \"repo2\"\n"},
 	}
 
 	for _, test := range tests {
-		if chuckfile.ProjectArrayToChuckfile(test.projects, version,
-			now) != test.exp {
-			t.Errorf("%s returned bad chuckfile: %q",
-				test.projects, test.exp)
+		str := chuckfile.ProjectArrayToChuckfile(test.projects,
+			version, now)
+		if str != test.exp {
+			t.Errorf("%s returned bad chuckfile: %q (expected: %q)",
+				test.projects, str, test.exp)
 		}
 	}
 }

@@ -17,6 +17,8 @@
 package chuckfile
 
 import "fmt"
+import "sort"
+import "strings"
 import "time"
 
 import "github.com/mfinelli/wmuc/parser"
@@ -26,5 +28,51 @@ func ProjectArrayToChuckfile(projects []parser.Project, version string,
 	output := fmt.Sprintf("# wmuc v%s generated on: %s\n\n", version,
 		now.Format(time.RFC1123))
 
+	// we'll find the "empty" project first and slot those first
+	var rootProject *parser.Project
+	for i, project := range projects {
+		if project.Path == "" {
+			rootProject = &project
+			projects = append(projects[:i], projects[i+1:]...)
+			break
+		}
+	}
+
+	if rootProject != nil {
+		output += formatProject(rootProject)
+	}
+
 	return output
+}
+
+func formatProject(project *parser.Project) string {
+	formatted := ""
+
+	indent := "    "
+	if project.Path == "" {
+		indent = ""
+	}
+
+	repos := make([]string, len(project.Repos))
+	for i, repo := range project.Repos {
+		out := fmt.Sprintf("%srepo %q", indent, repo.Url)
+		if repo.Branch != "" {
+			out += fmt.Sprintf(", branch: %q", repo.Branch)
+		}
+		repos[i] = fmt.Sprintf("%s\n", out)
+	}
+
+	sort.Strings(repos)
+
+	if project.Path != "" {
+		formatted += fmt.Sprintf("project %q do\n", project.Path)
+	}
+
+	formatted += strings.Join(repos, "")
+
+	if project.Path != "" {
+		formatted += "end\n"
+	}
+
+	return formatted
 }
