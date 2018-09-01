@@ -42,6 +42,14 @@ func ProjectArrayToChuckfile(projects []parser.Project, version string,
 		output += formatProject(rootProject)
 	}
 
+	sort.Slice(projects, func(i, j int) bool {
+		return projects[i].Path < projects[j].Path
+	})
+
+	for _, project := range projects {
+		output += fmt.Sprintf("%s\n", formatProject(&project))
+	}
+
 	return output
 }
 

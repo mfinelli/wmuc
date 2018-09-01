@@ -37,6 +37,24 @@ func TestProjectArrayToChuckfile(t *testing.T) {
 				parser.Repo{Url: "repo2"},
 			}},
 		}, head + "repo \"repo1\"\nrepo \"repo2\"\n"},
+		{[]parser.Project{
+			parser.Project{"zzz", []parser.Repo{
+				parser.Repo{Url: "repo1", Branch: "dev"},
+				parser.Repo{Url: "repo2"},
+			}},
+			parser.Project{"", []parser.Repo{
+				parser.Repo{Url: "repo3"},
+				parser.Repo{Url: "repo4"},
+			}},
+			parser.Project{"aaa", []parser.Repo{
+				parser.Repo{Url: "repo5"},
+				parser.Repo{Url: "repo6", Branch: "dev"},
+			}},
+		}, head + "repo \"repo3\"\nrepo \"repo4\"\n" +
+			"project \"aaa\" do\n    repo \"repo5\"\n    " +
+			"repo \"repo6\", branch: \"dev\"\nend\n\n" +
+			"project \"zzz\" do\n    repo \"repo1\", " +
+			"branch: \"dev\"\n    repo \"repo2\"\nend\n\n"},
 	}
 
 	for _, test := range tests {
