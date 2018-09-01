@@ -36,7 +36,7 @@ func ProjectArrayToChuckfile(projects []parser.Project, version string,
 		output += fmt.Sprintf("%s\n", formatProject(project))
 	}
 
-	return output
+	return output[:len(output)-1]
 }
 
 func formatProject(project parser.Project) string {

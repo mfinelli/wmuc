@@ -24,7 +24,7 @@ import "github.com/mfinelli/wmuc/parser"
 func TestProjectArrayToChuckfile(t *testing.T) {
 	now := time.Date(2018, time.September, 1, 10, 30, 0, 0, time.UTC)
 	version := "0.1.0"
-	head := "# wmuc v0.1.0 generated on: Sat, 01 Sep 2018 10:30:00 UTC\n\n"
+	head := "# wmuc v0.1.0 generated on: Sat, 01 Sep 2018 10:30:00 UTC\n"
 
 	tests := []struct {
 		projects []parser.Project
@@ -36,7 +36,7 @@ func TestProjectArrayToChuckfile(t *testing.T) {
 				parser.Repo{Url: "repo1"},
 				parser.Repo{Url: "repo2"},
 			}},
-		}, head + "repo \"repo1\"\nrepo \"repo2\"\n\n"},
+		}, head + "\nrepo \"repo1\"\nrepo \"repo2\"\n"},
 		{[]parser.Project{
 			parser.Project{"zzz", []parser.Repo{
 				parser.Repo{Url: "repo1", Branch: "dev"},
@@ -50,11 +50,11 @@ func TestProjectArrayToChuckfile(t *testing.T) {
 				parser.Repo{Url: "repo5"},
 				parser.Repo{Url: "repo6", Branch: "dev"},
 			}},
-		}, head + "repo \"repo3\"\nrepo \"repo4\"\n\n" +
+		}, head + "\nrepo \"repo3\"\nrepo \"repo4\"\n\n" +
 			"project \"aaa\" do\n    repo \"repo5\"\n    " +
 			"repo \"repo6\", branch: \"dev\"\nend\n\n" +
 			"project \"zzz\" do\n    repo \"repo1\", " +
-			"branch: \"dev\"\n    repo \"repo2\"\nend\n\n"},
+			"branch: \"dev\"\n    repo \"repo2\"\nend\n"},
 	}
 
 	for _, test := range tests {
