@@ -28,32 +28,18 @@ func ProjectArrayToChuckfile(projects []parser.Project, version string,
 	output := fmt.Sprintf("# wmuc v%s generated on: %s\n\n", version,
 		now.Format(time.RFC1123))
 
-	// we'll find the "empty" project first and slot those first
-	var rootProject *parser.Project
-	for i, project := range projects {
-		if project.Path == "" {
-			rootProject = &project
-			projects = append(projects[:i], projects[i+1:]...)
-			break
-		}
-	}
-
-	if rootProject != nil {
-		output += formatProject(rootProject)
-	}
-
 	sort.Slice(projects, func(i, j int) bool {
 		return projects[i].Path < projects[j].Path
 	})
 
 	for _, project := range projects {
-		output += fmt.Sprintf("%s\n", formatProject(&project))
+		output += fmt.Sprintf("%s\n", formatProject(project))
 	}
 
 	return output
 }
 
-func formatProject(project *parser.Project) string {
+func formatProject(project parser.Project) string {
 	formatted := ""
 
 	indent := "    "
