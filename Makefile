@@ -1,4 +1,5 @@
 SOURCES := $(wildcard *.go)
+SOURCES += $(wildcard chuckfile/*.go)
 SOURCES += $(wildcard cmd/*.go)
 SOURCES += $(wildcard legal/*.go)
 SOURCES += $(wildcard lexer/*.go)
