@@ -38,6 +38,13 @@ func TestProjectArrayToChuckfile(t *testing.T) {
 			}},
 		}, head + "\nrepo \"repo1\"\nrepo \"repo2\"\n"},
 		{[]parser.Project{
+			parser.Project{"", []parser.Repo{
+				parser.Repo{Url: "repo1"},
+				parser.Repo{Url: "repo2"},
+			}},
+			parser.Project{"empty", []parser.Repo{}},
+		}, head + "\nrepo \"repo1\"\nrepo \"repo2\"\n"},
+		{[]parser.Project{
 			parser.Project{"zzz", []parser.Repo{
 				parser.Repo{Url: "repo1", Branch: "dev"},
 				parser.Repo{Url: "repo2"},
