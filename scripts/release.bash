@@ -40,6 +40,11 @@ done
 make third-party.tar.gz
 gpg -ba third-party.tar.gz
 
+# generate a source tarball and sign it
+tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+git archive -o "wmuc-$tag.tar.gz" HEAD
+gpg -ba "wmuc-$tag.tar.gz"
+
 git stash pop
 
 exit 0
