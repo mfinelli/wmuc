@@ -17,14 +17,15 @@
 package cmd
 
 import "fmt"
+import "io/ioutil"
 import "os"
+import "path"
 import "time"
 
 import "github.com/spf13/cobra"
 import "github.com/spf13/viper"
 
 import "github.com/mfinelli/wmuc/chuckfile"
-import "github.com/mfinelli/wmuc/parser"
 
 var initCmd = &cobra.Command{
 	Use:   "init",
@@ -34,8 +35,18 @@ var initCmd = &cobra.Command{
 			fmt.Println("A chuckfile already exists!")
 			os.Exit(1)
 		} else {
-			fmt.Println(chuckfile.ProjectArrayToChuckfile(
-				make([]parser.Project, 0), VERSION, time.Now()))
+			output := chuckfile.ProjectArrayToChuckfile(
+				chuckfile.WalkDirectory(), VERSION, time.Now())
+
+			chuckfile.RemoveExistingChuckfile()
+
+			err := ioutil.WriteFile(path.Join(".", "chuckfile"),
+				[]byte(output), 0644)
+
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 	},
 }

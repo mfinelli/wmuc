@@ -58,7 +58,7 @@ func InSync(expected map[string]parser.Project) map[string][]string {
 				continue
 			}
 
-			if getOriginRemote(r) != repo.Url {
+			if GetOriginRemote(r) != repo.Url {
 				sync["wrongRepo"] = append(sync["wrongRepo"],
 					path.Join(project.Path, repodir))
 				continue
@@ -89,7 +89,7 @@ func directoryExists(path string) bool {
 	return true
 }
 
-func getOriginRemote(repo *git.Repository) string {
+func GetOriginRemote(repo *git.Repository) string {
 	remotes, _ := repo.Remotes()
 
 	for _, remote := range remotes {
