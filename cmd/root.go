@@ -21,7 +21,7 @@ import "os"
 
 import "github.com/spf13/cobra"
 
-var rootCmd = &cobra.Command{
+var RootCmd = &cobra.Command{
 	Use:   "wmuc",
 	Short: "A git repository manager.",
 	Long: `Wind Me Up, Chuck
@@ -37,7 +37,7 @@ redistribute it under certain conditions; run "wmuc about" for details.`,
 }
 
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
+	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

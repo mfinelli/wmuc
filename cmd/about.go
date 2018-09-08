@@ -37,6 +37,6 @@ var warrantyCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(aboutCmd)
+	RootCmd.AddCommand(aboutCmd)
 	aboutCmd.AddCommand(warrantyCmd)
 }

@@ -49,7 +49,7 @@ chuckfile match what is on disk.`,
 }
 
 func init() {
-	rootCmd.AddCommand(syncCmd)
+	RootCmd.AddCommand(syncCmd)
 	syncCmd.Flags().BoolP("debug", "d", false, "enable lexer/parser debug")
 	syncCmd.Flags().BoolP("verbose", "v", false, "enable verbose mode")
 	viper.BindPFlag("debug", syncCmd.Flags().Lookup("debug"))

@@ -11,7 +11,7 @@ all: wmuc
 
 clean:
 	rm -rf vendor wmuc legal/third_party.go third-party.tar.gz* \
-		wmuc-* wmuc.exe-*
+		wmuc-* wmuc.exe-* *.1
 
 fmt:
 	find . -name 'vendor*' -prune -o -name '*.go' -exec go fmt {} \;

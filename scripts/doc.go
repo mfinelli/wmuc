@@ -14,46 +14,52 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package cmd
+package main
 
 import "fmt"
-import "io/ioutil"
 import "os"
-import "path"
-import "time"
+import "path/filepath"
 
 import "github.com/spf13/cobra"
+import "github.com/spf13/cobra/doc"
 import "github.com/spf13/viper"
 
-import "github.com/mfinelli/wmuc/chuckfile"
+import wmuc "github.com/mfinelli/wmuc/cmd"
 
-var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "create a chuckfile from the repositories on disk",
+var rootCmd = &cobra.Command{
+	Use:   "doc",
+	Short: "generate man pages",
 	Run: func(cmd *cobra.Command, args []string) {
-		if chuckfile.ChuckfileExists() && !viper.GetBool("initForce") {
-			fmt.Println("A chuckfile already exists!")
+		header := &doc.GenManHeader{
+			Title:   "WMUC",
+			Section: "1",
+		}
+
+		cwd, _ := os.Getwd()
+		err := os.MkdirAll(filepath.Join(cwd,
+			viper.GetString("path")), 0755)
+
+		if err != nil {
+			fmt.Println(err)
 			os.Exit(1)
-		} else {
-			output := chuckfile.ProjectArrayToChuckfile(
-				chuckfile.WalkDirectory(), VERSION, time.Now())
+		}
 
-			chuckfile.RemoveExistingChuckfile()
+		err = doc.GenManTree(wmuc.RootCmd, header,
+			viper.GetString("path"))
 
-			err := ioutil.WriteFile(path.Join(".", "chuckfile"),
-				[]byte(output), 0644)
-
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
 		}
 	},
 }
 
-func init() {
-	RootCmd.AddCommand(initCmd)
-	initCmd.Flags().BoolP("force", "f", false,
-		"overwrite existing chuckfile")
-	viper.BindPFlag("initForce", initCmd.Flags().Lookup("force"))
+func main() {
+	rootCmd.Flags().StringP("path", "", ".", "man page output path")
+	viper.BindPFlag("path", rootCmd.Flags().Lookup("path"))
+
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
