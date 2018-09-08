@@ -12,6 +12,7 @@ install:
 
 script:
     - make test && make
+    - mkdir pkg && make DESTDIR=./pkg install && make DESTDIR=./pkg uninstall
 
 notifications:
     email: false

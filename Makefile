@@ -7,9 +7,12 @@ SOURCES += $(wildcard parser/*.go)
 SOURCES += $(wildcard tokens/*.go)
 SOURCES += $(wildcard util/*.go)
 
+PREFIX := /usr/local
+DESTDIR :=
+
 LDFLAGS := -ldflags '-s -w'
 
-all: wmuc
+all: %.1 wmuc
 
 clean:
 	rm -rf vendor wmuc legal/third_party.go third-party.tar.gz* \
@@ -36,7 +39,18 @@ third-party.tar.gz: vendor
 %.1: $(SOURCES) vendor
 	go run scripts/doc/main.go
 
+install:
+	install -Dm755 wmuc $(DESTDIR)$(PREFIX)/bin/wmuc
+	install -Dm644 README.md $(DESTDIR)$(PREFIX)/share/doc/wmuc/README.md
+	install -d $(DESTDIR)$(PREFIX)/share/man/man1
+	install -m644 *.1 $(DESTDIR)$(PREFIX)/share/man/man1
+
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/bin/wmuc
+	rm -rf $(DESTDIR)$(PREFIX)/share/doc/wmuc
+	rm -f $(DESTDIR)$(PREFIX)/share/man/man1/wmuc*.1
+
 release:
 	./scripts/release.bash
 
-.PHONY: all clean fmt release test
+.PHONY: all clean fmt install release test uninstall
