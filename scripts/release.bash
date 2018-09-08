@@ -45,6 +45,10 @@ tag=$(git describe --tags $(git rev-list --tags --max-count=1))
 git archive -o "wmuc-$tag.tar.gz" HEAD
 gpg -ba "wmuc-$tag.tar.gz"
 
+# grab some other artifacts and package them up
+tar zcvf "wmuc-contrib-$tag.tar.gz" *.1 *.completion
+gpg -ba "wmuc-contrib-$tag.tar.gz"
+
 git stash pop
 
 exit 0
