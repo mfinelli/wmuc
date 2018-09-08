@@ -1,6 +1,6 @@
 # Change Log
 
-## unreleased
+## v0.3.0 - 2018/09/08
 
 * Add scripts for man pages and shell completion.
 
