@@ -31,6 +31,9 @@ legal/third_party.go: scripts/license.go vendor
 third-party.tar.gz: vendor
 	tar zcvf third-party.tar.gz vendor
 
+%.1: $(SOURCES) vendor
+	go run scripts/doc/main.go
+
 release:
 	./scripts/release.bash
 
