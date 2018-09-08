@@ -12,11 +12,11 @@ DESTDIR :=
 
 LDFLAGS := -ldflags '-s -w'
 
-all: %.1 wmuc
+all: %.1 %.completion wmuc
 
 clean:
 	rm -rf vendor wmuc legal/third_party.go third-party.tar.gz* \
-		wmuc-* wmuc.exe-* *.1
+		wmuc-* wmuc.exe-* *.1 *.completion
 
 fmt:
 	find . -name 'vendor*' -prune -o -name '*.go' -exec go fmt {} \;
@@ -39,16 +39,25 @@ third-party.tar.gz: vendor
 %.1: $(SOURCES) vendor
 	go run scripts/doc/main.go
 
+%.completion: $(SOURCES) vendor
+	go run scripts/completions/main.go
+
 install:
 	install -Dm755 wmuc $(DESTDIR)$(PREFIX)/bin/wmuc
 	install -Dm644 README.md $(DESTDIR)$(PREFIX)/share/doc/wmuc/README.md
 	install -d $(DESTDIR)$(PREFIX)/share/man/man1
 	install -m644 *.1 $(DESTDIR)$(PREFIX)/share/man/man1
+	install -Dm644 bash.completion \
+		$(DESTDIR)$(PREFIX)/share/bash-completion/completions/wmuc
+	install -Dm644 zsh.completion \
+		$(DESTDIR)$(PREFIX)/zsh/site-functions/_wmuc
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/wmuc
 	rm -rf $(DESTDIR)$(PREFIX)/share/doc/wmuc
 	rm -f $(DESTDIR)$(PREFIX)/share/man/man1/wmuc*.1
+	rm -f $(DESTDIR)$(PREFIX)/share/bash-completion/completions/wmuc
+	rm -f $(DESTDIR)$(PREFIX)/zsh/site-functions/_wmuc
 
 release:
 	./scripts/release.bash
