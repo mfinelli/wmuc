@@ -21,7 +21,7 @@ rm wmuc
 # loop through what we offer and build it
 for os in darwin linux windows; do
   for arch in amd64; do
-    GOOS=$os GOARCH=$arch make
+    GOOS=$os GOARCH=$arch make wmuc
 
     if [[ $os == windows ]]; then
       exe=wmuc.exe
