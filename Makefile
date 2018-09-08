@@ -7,6 +7,8 @@ SOURCES += $(wildcard parser/*.go)
 SOURCES += $(wildcard tokens/*.go)
 SOURCES += $(wildcard util/*.go)
 
+LDFLAGS := -ldflags '-s -w'
+
 all: wmuc
 
 clean:
@@ -20,7 +22,7 @@ test: fmt vendor legal/third_party.go
 	go test ./...
 
 wmuc: $(SOURCES) vendor legal/third_party.go
-	go build wmuc.go
+	go build ${LDFLAGS} wmuc.go
 
 vendor: Gopkg.toml Gopkg.lock
 	dep ensure
