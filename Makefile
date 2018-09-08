@@ -36,10 +36,10 @@ legal/third_party.go: scripts/license/main.go vendor
 third-party.tar.gz: vendor
 	tar zcvf third-party.tar.gz vendor
 
-%.1: $(SOURCES) vendor
+%.1: $(SOURCES) vendor legal/third_party.go
 	go run scripts/doc/main.go
 
-%.completion: $(SOURCES) vendor
+%.completion: $(SOURCES) vendor legal/third_party.go
 	go run scripts/completions/main.go
 
 install:
