@@ -25,7 +25,9 @@ test: fmt vendor legal/third_party.go
 	go test ./...
 
 wmuc: $(SOURCES) vendor legal/third_party.go
-	go build ${LDFLAGS} wmuc.go
+	go build ${LDFLAGS} \
+		-gcflags "all=-trimpath=${GOPATH}/src" \
+		-asmflags "all=-trimpath=${GOPATH}/src" wmuc.go
 
 vendor: Gopkg.toml Gopkg.lock
 	dep ensure
