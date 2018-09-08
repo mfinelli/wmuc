@@ -25,7 +25,7 @@ wmuc: $(SOURCES) vendor legal/third_party.go
 vendor: Gopkg.toml Gopkg.lock
 	dep ensure
 
-legal/third_party.go: scripts/license.go vendor
+legal/third_party.go: scripts/license/main.go vendor
 	go run scripts/license/main.go
 
 third-party.tar.gz: vendor
