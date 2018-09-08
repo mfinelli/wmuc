@@ -26,7 +26,7 @@ vendor: Gopkg.toml Gopkg.lock
 	dep ensure
 
 legal/third_party.go: scripts/license.go vendor
-	go run scripts/license.go
+	go run scripts/license/main.go
 
 third-party.tar.gz: vendor
 	tar zcvf third-party.tar.gz vendor
